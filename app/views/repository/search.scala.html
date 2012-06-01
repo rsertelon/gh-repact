@@ -1,3 +1,21 @@
+@(query: String)(repos: Option[Seq[(String,String)]])
+
 @application.main(Some("Search Results")) {
-    <h1>There will be a list here</h1>
+		
+		@components.search()
+		
+		<div class="container">
+	    <h1>Repositories found for "@query"</h1>
+	    
+	    @repos.map { reps =>
+	    	<ul>
+	    	@for(r <- reps) {
+	    		<li>@r._1 / @r._2</li>
+	    	}
+	    	</ul>
+	   	}.getOrElse{
+	   		<p>No results found</p>
+	   	}
+	    
+	  </div>
 }
