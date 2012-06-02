@@ -5,6 +5,8 @@ import play.api.mvc._
 import play.api.libs.ws._
 import play.api.libs.json._
 
+case class Repo(owner: String, name: String, url: String)
+
 object Repository extends Controller {
 
   def search(query: String) = Action { // Search a repo by keyword. Print a list of repos
@@ -13,11 +15,11 @@ object Repository extends Controller {
   			val repos = (Json.parse(response.body) \ "repositories") match {
   				case JsArray(elements) => {
   					val repos = elements.map { repo =>
-  						((repo \ "username").asOpt[String], (repo \ "name").asOpt[String])
+  						((repo \ "username").asOpt[String], (repo \ "name").asOpt[String], (repo \ "url").asOpt[String])
   					}.filter{ 
-  						case (username,name) => username.isDefined && name.isDefined 
+  						case (username,name,url) => username.isDefined && name.isDefined && url.isDefined
   					}.map{
-  						case (username,name) => (username.get, name.get)
+  						case (username,name,url) => new Repo(username.get, name.get, url.get)
   					}
   					if(repos.isEmpty) None else Some(repos)
 					}

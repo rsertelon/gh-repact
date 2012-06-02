@@ -1,4 +1,4 @@
-@(query: String)(repos: Option[Seq[(String,String)]])
+@(query: String)(reposOpt: Option[Seq[controllers.Repo]])
 
 @application.main(Some("Search Results")) {
 		
@@ -6,11 +6,16 @@
 		
 		<div class="container">
 	    <h1>Repositories found for "@query"</h1>
-	    
-	    @repos.map { reps =>
-	    	<ul>
-	    	@for(r <- reps) {
-	    		<li>@r._1 / @r._2</li>
+	  </div>
+	  
+	  <div class="container">
+	    @reposOpt.map { repos =>
+	    	<ul class="unstyled" style="margin-top:20px">
+	    	@for(repo <- repos) {
+	    		<li class="well">
+	    			<a href="@routes.Repository.show(repo.owner,repo.name)">@repo.owner / @repo.name</a>
+	    			<a href="@repo.url" title="See on Github" target="_blank" style="float:right">See on Github <i class="icon-share-alt"></i></a>
+	    		</li>
 	    	}
 	    	</ul>
 	   	}.getOrElse{
