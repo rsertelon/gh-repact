@@ -1,5 +1,28 @@
-@(repositoryName: String)
+@(repoInfo: models.Repo)(contributors: Seq[Contributor])(commits: Seq[Commit])
 
-@application.main(Some(repositoryName)) {
-    <h1>There will be @repositoryName description here</h1>
+@contributor(contrib: models.Contributor) = {
+	<li class="well span3">
+		<img src="@contrib.avatar_url" width="50" height="50" style="float:left" />
+		<div class="container span2" style="margin-left:10px;float:left">
+			<p><a href="@contrib.url" target="_blank">@contrib.login</a></p>
+			<p><small>Commits: @contrib.contributions</small></p>
+		</div>
+	</li>
+}
+
+@application.main(Some(repoInfo.owner + "/" + repoInfo.name)) {
+
+	<div class="container">
+    <h1>@repoInfo.owner / @repoInfo.name <small>@repoInfo.description</small> <iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=@repoInfo.owner&repo=@repoInfo.name&type=watch&count=true"
+  allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px" style="float:right"></iframe></h1>
+    
+    <h2>Contributors</h2>
+    <ul class="unstyled" style="margin-left:40px">
+    @for(contrib <- contributors) {
+    	@contributor(contrib)
+    }
+    </ul>
+    
+    @commits
+  </div>
 }

@@ -8,7 +8,8 @@ object ApplicationBuild extends Build {
     val appVersion      = "1.0-SNAPSHOT"
 
     val appDependencies = Seq(
-      "com.github.twitter" % "bootstrap" % "2.0.3"
+      "com.github.twitter" % "bootstrap" % "2.0.3",
+      "joda-time" % "joda-time" % "2.1"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
