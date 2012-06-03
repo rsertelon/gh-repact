@@ -10,6 +10,24 @@
 	</li>
 }
 
+@commit(commitData: models.Commit) = {
+	<li class="well span5">
+		<a href="@commitData.committer.url" target="_blank" title="By @commitData.committer.login">
+			<img src="@commitData.committer.avatar_url" width="50" height="50" style="float:left" />
+		</a>
+		<div class="container span4" style="margin-left:10px">
+			<p><a href="@commitData.url(repoInfo)" title="@commitData.message" target="_blank">@commitData.printedMessage</a></p>
+			<p><small>@commitData.date</small></p>
+		</div>
+	</li>
+}
+
+@lightCommit(commitData: models.Commit) = {
+	<li class="well span4" style="text-align:center">
+		<p><a href="@commitData.url(repoInfo)" title="@commitData.message" target="_blank">@commitData.printedMessage</a></p>
+	</li>
+}
+
 @application.main(Some(repoInfo.owner + "/" + repoInfo.name)) {
 
 	<div class="container">
@@ -25,6 +43,11 @@
     }
     </ul>
     
-    @commits
+    <h2>Commits</h2>
+    <ul class="unstyled">
+    @for(commitData <- commits) {
+    	@lightCommit(commitData)
+    }
+    </ul>
   </div>
 }

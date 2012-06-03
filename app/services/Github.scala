@@ -97,14 +97,15 @@ object Github {
 							(commit \ "committer" \ "login").asOpt[String], 
 							(commit \ "committer" \ "avatar_url").asOpt[String], 
 							(commit \ "commit" \ "committer" \ "date").asOpt[Date], 
-							(commit \ "commit" \ "message").asOpt[String]
+							(commit \ "commit" \ "message").asOpt[String],
+							(commit \ "sha").asOpt[String]
 						)
 					}.filter{ 
-						case (login,avatar_url,date,message) => 
-							login.isDefined && avatar_url.isDefined && date.isDefined && message.isDefined
+						case (login,avatar_url,date,message,sha) => 
+							login.isDefined && avatar_url.isDefined && date.isDefined && message.isDefined & sha.isDefined
 					}.map{
-						case (login,avatar_url,date,message) => 
-							new Commit(new Contributor(login.get,avatar_url.get,0,"https://github.com/" + login.get),date.get,message.get)
+						case (login,avatar_url,date,message,sha) => 
+							new Commit(new Contributor(login.get,avatar_url.get,0,"https://github.com/" + login.get),date.get,message.get,sha.get)
 					}
 					if(commitsSeq.isEmpty) None else Some(commitsSeq)
 				}
