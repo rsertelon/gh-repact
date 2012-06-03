@@ -13,8 +13,10 @@
 @application.main(Some(repoInfo.owner + "/" + repoInfo.name)) {
 
 	<div class="container">
-    <h1>@repoInfo.owner / @repoInfo.name <small>@repoInfo.description</small> <iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=@repoInfo.owner&repo=@repoInfo.name&type=watch&count=true"
+    <h1>@repoInfo.owner / @repoInfo.name <iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=@repoInfo.owner&repo=@repoInfo.name&type=watch&count=true"
   allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px" style="float:right"></iframe></h1>
+  
+  	<p><i class="icon-chevron-right"></i>@repoInfo.description</p>
     
     <h2>Contributors</h2>
     <ul class="unstyled" style="margin-left:40px">

@@ -34,12 +34,15 @@ object Github {
 							(repo \ "username").asOpt[String], 
 							(repo \ "name").asOpt[String], 
 							(repo \ "url").asOpt[String],
-							(repo \ "description").asOpt[String]
+							(repo \ "description").asOpt[String],
+							(repo \ "size").asOpt[Int]
 						)
 					}.filter{ 
-						case (username,name,url,desc) => username.isDefined && name.isDefined && url.isDefined && desc.isDefined
+						case (username,name,url,desc,size) => 
+							size.get != 0 && username.isDefined && name.isDefined && url.isDefined && desc.isDefined
 					}.map{
-						case (username,name,url,desc) => new Repo(username.get, name.get, url.get, desc.get)
+						case (username,name,url,desc,size) => 
+							new Repo(username.get, name.get, url.get, desc.get)
 					}
 					if(repos.isEmpty) None else Some(repos)
 				}
