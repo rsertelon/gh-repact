@@ -1,0 +1,10 @@
+.timeline{
+	background:url('../images/timeline.png') 50% repeat-y;
+	overflow: auto;
+	background-size: 3px 1px;
+	padding-top:10px;
+}
+
+h2 {
+	margin-bottom:20px
+}

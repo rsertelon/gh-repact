@@ -10,21 +10,9 @@
 	</li>
 }
 
-@commit(commitData: models.Commit) = {
-	<li class="well span5">
-		<a href="@commitData.committer.url" target="_blank" title="By @commitData.committer.login">
-			<img src="@commitData.committer.avatar_url" width="50" height="50" style="float:left" />
-		</a>
-		<div class="container span4" style="margin-left:10px">
-			<p><a href="@commitData.url(repoInfo)" title="@commitData.message" target="_blank">@commitData.printedMessage</a></p>
-			<p><small>@commitData.date</small></p>
-		</div>
-	</li>
-}
-
 @lightCommit(commitData: models.Commit) = {
-	<li class="well span4" style="text-align:center">
-		<p><a href="@commitData.url(repoInfo)" title="@commitData.message" target="_blank">@commitData.printedMessage</a></p>
+	<li style="text-align:center">
+		<a href="@commitData.url(repoInfo)" target="_blank" class="span3 alert alert-info" rel="popover" data-content="@commitData.message" data-original-title="<img src='@commitData.committer.avatar_url' width='50' height='50' /> @commitData.committer.login <small>&mdash; @commitData.prettyDate</small>">@commitData.printedMessage</a>
 	</li>
 }
 
@@ -36,18 +24,22 @@
   
   	<p><i class="icon-chevron-right"></i>@repoInfo.description</p>
     
-    <h2>Contributors</h2>
-    <ul class="unstyled" style="margin-left:40px">
-    @for(contrib <- contributors) {
-    	@contributor(contrib)
-    }
-    </ul>
+    <div class="span8" style="float:left;margin-left:0">
+				<h2>Contributors</h2>
+				<ul class="unstyled">
+				@for(contrib <- contributors) {
+					@contributor(contrib)
+				}
+				</ul>
+    </div>
     
-    <h2>Commits</h2>
-    <ul class="unstyled">
-    @for(commitData <- commits) {
-    	@lightCommit(commitData)
-    }
-    </ul>
+    <div class="span4" style="float:left">
+		  <h2 style="text-align:center">Last Commits</h2>
+		  <ul class="unstyled timeline">
+		  @for(commitData <- commits) {
+		  	@lightCommit(commitData)
+		  }
+		  </ul>
+		</div>
   </div>
 }
