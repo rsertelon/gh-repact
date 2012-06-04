@@ -22,9 +22,10 @@ object Repository extends Controller {
   		
 		Async {
   		services.Github.repoInfo(user,name).flatMap{ repoInfo =>
-				services.Github.repoContributors(user,name).flatMap { repoContributors =>
-					services.Github.commits(user,name).map { repoCommits =>
-						Ok(views.html.repository.show(repoInfo.get)(repoContributors.get)(repoCommits.get))
+				services.Github.commits(user,name).flatMap { repoCommits =>
+					services.Github.repoContributors(user,name).map { repoContributors =>
+						val total = repoContributors.get.foldLeft(0)((s,c) => s + c.contributions)
+						Ok(views.html.repository.show(repoInfo.get)(repoContributors.get.map(r => Contributor(r, total)))(repoCommits.get))
 					}
 				}
   		}

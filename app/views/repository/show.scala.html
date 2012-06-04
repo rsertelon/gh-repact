@@ -5,7 +5,9 @@
 		<img src="@contrib.avatar_url" width="50" height="50" style="float:left" />
 		<div class="container span2" style="margin-left:10px;float:left">
 			<p><a href="@contrib.url" target="_blank">@contrib.login</a></p>
-			<p><small>Commits: @contrib.contributions</small></p>
+			<div class="progress progress-striped" title="Commits: @contrib.contributions">
+			  <div class="bar" style="width: @contrib.contribPercent%"></div>
+			</div>
 		</div>
 	</li>
 }
