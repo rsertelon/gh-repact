@@ -1,9 +1,18 @@
 @(repoInfo: models.Repo)(contributors: Seq[Contributor])(commits: Seq[Commit])
 
+@badgeImages(badges: Seq[Badge]) = {
+	@for(badge <- badges) {
+		<img width='40' height='40' src='@badge.image' title='@badge.name' />
+	}
+}
+
 @contributor(contrib: models.Contributor) = {
 	<li class="well span3">
 		<img src="@contrib.avatar_url" width="50" height="50" style="float:left" />
 		<div class="container span2" style="margin-left:10px;float:left">
+			@contrib.badges.map { badges =>
+				<img src='@routes.Assets.at("/images/coderwall.png")' width="20" height="20" class="pull-right" rel="popover" data-content="@badgeImages(badges)" data-original-title="Coderwall Badges" />
+			}
 			<p><a href="@contrib.url" target="_blank">@contrib.login</a></p>
 			<div class="progress progress-striped" title="Commits: @contrib.contributions">
 			  <div class="bar" style="width: @contrib.contribPercent%"></div>

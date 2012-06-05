@@ -27,7 +27,7 @@ object Github {
 
 	def search(q: String)(result: (String, Option[Seq[Repo]]) => Result) = {
 		WS.url("http://github.com/api/v2/json/repos/search/" + q).get().map{ response =>
-			val repos = (Json.parse(response.body) \ "repositories") match {
+			val repos = (response.json \ "repositories") match {
 				case JsArray(elements) => {
 					val repos = elements.map { repo =>
 						(
@@ -55,7 +55,7 @@ object Github {
 	
 	def repoInfo(owner:String,name:String): Promise[Option[Repo]] = {
 		WS.url("https://api.github.com/repos/" + owner + "/" + name).get().map { response =>
-			Json.parse(response.body) match {
+			response.json match {
 				case jsObj: JsObject => {
 					(jsObj \ "html_url").asOpt[String].map { url =>
 						(jsObj \ "description").asOpt[String].map { desc =>
@@ -70,7 +70,7 @@ object Github {
 	
 	def repoContributors(owner:String, name:String): Promise[Option[Seq[Contributor]]] = {
 		WS.url("https://api.github.com/repos/" + owner + "/" + name + "/contributors").get().map{ response =>
-			Json.parse(response.body) match {
+			response.json match {
 				case JsArray(elements) => {
 					val contribs = elements.map { contrib =>
 						((contrib \ "login").asOpt[String], (contrib \ "avatar_url").asOpt[String], (contrib \ "contributions").asOpt[Int])
@@ -90,7 +90,7 @@ object Github {
 	
 	def commits(owner:String, name:String): Promise[Option[Seq[Commit]]] = {
 		WS.url("https://api.github.com/repos/" + owner + "/" + name + "/commits?per_page=100").get().map{ response =>
-			Json.parse(response.body) match {
+			response.json match {
 				case JsArray(elements) => {
 					val commitsSeq = elements.map { commit =>
 						(
