@@ -24,12 +24,19 @@ object Github {
             case _ => throw new RuntimeException("Parse exception")
         }
     }
+    
+    implicit def fromSeqToOption(seq: Seq[A]): Option[Seq[A]] = {
+        seq match {
+            case Nil => None
+            case s => Some(s)
+        }
+    }
 
 	def search(q: String)(result: (String, Option[Seq[Repo]]) => Result) = {
-		WS.url("http://github.com/api/v2/json/repos/search/" + q).get().map{ response =>
+		WS.url(GithubUrl.apiSearch(q)).get().map{ response =>
 			val repos = (response.json \ "repositories") match {
 				case JsArray(elements) => {
-					val reposSeq = elements.map { repo =>
+					elements.map { repo =>
 					    for {
                             url         <- (repo \ "url"        ).asOpt[String];
                             name        <- (repo \ "name"       ).asOpt[String];
@@ -38,11 +45,6 @@ object Github {
                             description <- (repo \ "description").asOpt[String]
 					    } yield new Repo(owner, name, url, description)
 					}.flatten
-                    
-                    reposSeq match {
-                        case Nil => None
-                        case seq => Some(seq)
-                    }
 				}
 				case _ => None
 			}
@@ -52,7 +54,7 @@ object Github {
 	}
 	
 	def repoInfo(owner:String,name:String): Promise[Option[Repo]] = {
-		WS.url("https://api.github.com/repos/" + owner + "/" + name).get().map { response =>
+		WS.url(GithubUrl.apiRepository(owner, name)).get().map { response =>
 			response.json match {
 				case jsObj: JsObject => {
                     for {
@@ -66,21 +68,16 @@ object Github {
 	}
 	
 	def repoContributors(owner:String, name:String): Promise[Option[Seq[Contributor]]] = {
-		WS.url("https://api.github.com/repos/" + owner + "/" + name + "/contributors").get().map{ response =>
+		WS.url(GithubUrl.apiRepositoryContributors(owner, name)).get().map{ response =>
 			response.json match {
 				case JsArray(elements) => {
-                    val contributorsSeq = elements.map { contributor =>
+                    elements.map { contributor =>
                         for {
                             login         <- (contributor \ "login"        ).asOpt[String];
                             avatar_url    <- (contributor \ "avatar_url"   ).asOpt[String];
                             contributions <- (contributor \ "contributions").asOpt[Int]
                         } yield new Contributor(login, avatar_url, contributions)
 					}.flatten
-                    
-                    contributorsSeq match {
-                        case Nil => None
-                        case seq => Some(seq)
-                    }
 				}
 				case _ => None
 			}
@@ -88,10 +85,10 @@ object Github {
 	}
 	
 	def commits(owner:String, name:String): Promise[Option[Seq[Commit]]] = {
-		WS.url("https://api.github.com/repos/" + owner + "/" + name + "/commits?per_page=100").get().map{ response =>
+		WS.url(GithubUrl.apiRepositoryCommits(owner, name)).get().map{ response =>
 			response.json match {
 				case JsArray(elements) => {
-					val commitsSeq = elements.map { commit =>
+					elements.map { commit =>
                         for {
                             sha        <- (commit \ "sha"                             ).asOpt[String];
                             login      <- (commit \ "committer" \ "login"             ).asOpt[String];
@@ -100,11 +97,6 @@ object Github {
                             date       <- (commit \ "commit"    \ "committer" \ "date").asOpt[Date]
                         } yield new Commit(new Contributor(login, avatar_url), date, message, sha)
 					}.flatten
-					
-                    commitsSeq match {
-                        case Nil => None
-                        case seq => Some(seq)
-                    }
 				}
 				case _ => None
 			}
