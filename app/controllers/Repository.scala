@@ -27,7 +27,7 @@ object Repository extends Controller {
 					Github.repoContributors(user,name).flatMap { repoContributors =>
 						Coderwall.badgesOf("bluepyth").map { badges =>
 							val total = repoContributors.get.foldLeft(0)((s,c) => s + c.contributions)
-							Ok(views.html.repository.show(repoInfo.get)(repoContributors.get.map(r => Contributor(r, total, badges.getOrElse(Seq.empty[Badge]))))(repoCommits.get))
+							Ok(views.html.repository.show(repoInfo.get)(repoContributors.get.map(r => Contributor(r, total, badges)))(repoCommits.get))
 						}
 					}
 				}

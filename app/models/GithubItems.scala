@@ -24,8 +24,8 @@ object GithubUrl {
 case class Repo(owner: String, name: String, url: String, description: String)
 
 object Contributor {
-	def apply(c: Contributor, total: Int, badges: Seq[Badge]) = {
-		new Contributor(c.login, c.avatar_url, c.contributions, Some(total), Some(badges))
+	def apply(c: Contributor, total: Int, badges: Option[Seq[Badge]]) = {
+		new Contributor(c.login, c.avatar_url, c.contributions, Some(total), badges)
 	}
 }
 
