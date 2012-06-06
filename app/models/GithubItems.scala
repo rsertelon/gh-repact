@@ -44,5 +44,5 @@ case class Commit(committer: Contributor, date: Date, message: String, sha: Stri
 	
 	val printedMessage = if(message.length > 30) message.substring(0,30) + "..." else message
 	
-	val prettyDate = prettyTime.format(date)
+	val prettyDate = Commit.prettyTime.format(date)
 }
