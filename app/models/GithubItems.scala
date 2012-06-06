@@ -8,9 +8,9 @@ object GithubUrl {
     
     val apiBase = "https://api.github.com/"
     
-    def user(user: String) = baseUrl + user
+    def user(user: String) = base + user
     
-    def commit(user: String, repoName: String, commitSha: String) = baseUrl + user + "/" + repoName + "/commit/" + commitSha
+    def commit(user: String, repoName: String, commitSha: String) = base + user + "/" + repoName + "/commit/" + commitSha
     
     def apiSearch(q: String) = "http://github.com/api/v2/json/repos/search/" + q
     

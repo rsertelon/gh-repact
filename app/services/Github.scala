@@ -25,7 +25,7 @@ object Github {
         }
     }
     
-    def fromSeqToOption(seq: Seq[A]): Option[Seq[A]] = {
+    def fromSeqToOption[A](seq: Seq[A]): Option[Seq[A]] = {
         seq match {
             case Nil => None
             case s => Some(s)
@@ -36,7 +36,7 @@ object Github {
 		WS.url(GithubUrl.apiSearch(q)).get().map{ response =>
 			val repos = (response.json \ "repositories") match {
 				case JsArray(elements) => {
-                    fromSeqToOption {
+                    fromSeqToOption[Repo] {
     					elements.map { repo =>
     					    for {
                                 url         <- (repo \ "url"        ).asOpt[String];
@@ -73,7 +73,7 @@ object Github {
 		WS.url(GithubUrl.apiRepositoryContributors(owner, name)).get().map{ response =>
 			response.json match {
 				case JsArray(elements) => {
-                    fromSeqToOption {
+                    fromSeqToOption[Contributor] {
                         elements.map { contributor =>
                             for {
                                 login         <- (contributor \ "login"        ).asOpt[String];
@@ -92,14 +92,14 @@ object Github {
 		WS.url(GithubUrl.apiRepositoryCommits(owner, name)).get().map{ response =>
 			response.json match {
 				case JsArray(elements) => {
-                    fromSeqToOption {
+                    fromSeqToOption[Commit] {
     					elements.map { commit =>
                             for {
                                 sha        <- (commit \ "sha"                             ).asOpt[String];
-                                login      <- (commit \ "committer" \ "login"             ).asOpt[String];
                                 message    <- (commit \ "commit"    \ "message"           ).asOpt[String];
-                                avatar_url <- (commit \ "committer" \ "avatar_url"        ).asOpt[String];
-                                date       <- (commit \ "commit"    \ "committer" \ "date").asOpt[Date]
+                                date       <- (commit \ "commit"    \ "committer" \ "date").asOpt[Date];
+                                login      <- (commit \ "committer" \ "login"             ).asOpt[String];
+                                avatar_url <- (commit \ "committer" \ "avatar_url"        ).asOpt[String]
                             } yield new Commit(new Contributor(login, avatar_url), date, message, sha)
     					}.flatten
                     }
