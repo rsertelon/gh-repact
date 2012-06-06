@@ -35,10 +35,14 @@ case class Contributor(login: String, avatar_url: String, contributions: Int = 0
     val url = GithubUrl.user(login)
 }
 
+object Commit {
+    val prettyTime = new PrettyTime
+}
+
 case class Commit(committer: Contributor, date: Date, message: String, sha: String) {
 	def url(repoInfo: Repo) = GithubUrl.commit(repoInfo.owner, repoInfo.name, sha)
 	
 	val printedMessage = if(message.length > 30) message.substring(0,30) + "..." else message
 	
-	val prettyDate = new PrettyTime().format(date)
+	val prettyDate = prettyTime.format(date)
 }

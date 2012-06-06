@@ -32,16 +32,16 @@ object Github {
         }
     }
 
-	def search(q: String)(result: (String, Option[Seq[Repo]]) => Result) = {
+	def search(q: String)(result: Option[Seq[Repo]] => Result) = {
 		WS.url(GithubUrl.apiSearch(q)).get().map{ response =>
 			val repos = (response.json \ "repositories") match {
 				case JsArray(elements) => {
                     fromSeqToOption[Repo] {
     					elements.map { repo =>
     					    for {
+                                size        <- (repo \ "size"       ).asOpt[Int] if size > 0;
                                 url         <- (repo \ "url"        ).asOpt[String];
                                 name        <- (repo \ "name"       ).asOpt[String];
-                                size        <- (repo \ "size"       ).asOpt[Int] if size > 0;
                                 owner       <- (repo \ "username"   ).asOpt[String];
                                 description <- (repo \ "description").asOpt[String]
     					    } yield new Repo(owner, name, url, description)
@@ -51,7 +51,7 @@ object Github {
 				case _ => None
 			}
 			
-    	    result(q, repos)
+    	    result(repos)
         }
 	}
 	
