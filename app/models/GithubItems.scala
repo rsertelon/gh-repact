@@ -11,8 +11,10 @@ object Contributor {
 
 case class Repo(owner: String, name: String, url: String, description: String)
 
-case class Contributor(login: String, avatar_url: String, contributions: Int, url: String, totalContribs: Option[Int] = None, badges: Option[Seq[Badge]] = None) {
+case class Contributor(login: String, avatar_url: String, contributions: Int = 0, totalContribs: Option[Int] = None, badges: Option[Seq[Badge]] = None) {
 	val contribPercent = totalContribs.map{t => contributions.toDouble / t * 100}.getOrElse(0)
+    
+    val url = "https://github.com/" + login
 }
 
 case class Commit(committer: Contributor, date: Date, message: String, sha: String) {
