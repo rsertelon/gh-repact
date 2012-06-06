@@ -5,7 +5,7 @@ import org.ocpsoft.pretty.time.PrettyTime
 
 object Contributor {
 	def apply(c: Contributor, total: Int, badges: Seq[Badge]) = {
-		new Contributor(c.login, c.avatar_url, c.contributions, c.url, Some(total), Some(badges))
+		new Contributor(c.login, c.avatar_url, c.contributions, Some(total), Some(badges))
 	}
 }
 
