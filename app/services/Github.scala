@@ -33,10 +33,10 @@ object Github {
 					    for {
                             url         <- (repo \ "url"        ).asOpt[String];
                             name        <- (repo \ "name"       ).asOpt[String];
-                            size        <- (repo \ "size"       ).asOpt[Int];
+                            size        <- (repo \ "size"       ).asOpt[Int] if size > 0;
                             owner       <- (repo \ "username"   ).asOpt[String];
                             description <- (repo \ "description").asOpt[String]
-					    } yield new Repo(owner, name, url, description, size)
+					    } yield new Repo(owner, name, url, description)
 					}.flatten
                     
                     reposSeq match {
