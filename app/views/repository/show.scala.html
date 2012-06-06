@@ -11,7 +11,7 @@
 		<img src="@contrib.avatar_url" width="50" height="50" style="float:left" />
 		<div class="container span2" style="margin-left:10px;float:left">
 			@contrib.badges.map { badges =>
-				<img src='@routes.Assets.at("/images/coderwall.png")' width="20" height="20" class="pull-right" rel="popover" data-content="@badgeImages(badges)" data-original-title="Coderwall Badges" />
+				<img src='@routes.Assets.at("images/coderwall.png")' width="20" height="20" class="pull-right" rel="popover" data-content="@badgeImages(badges)" data-original-title="Coderwall Badges" />
 			}
 			<p><a href="@contrib.url" target="_blank">@contrib.login</a></p>
 			<div class="progress progress-striped" title="Commits: @contrib.contributions">

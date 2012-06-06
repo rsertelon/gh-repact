@@ -16,16 +16,16 @@ object Coderwall {
 				(response.json \ "badges") match {
 					case JsArray(elements) => {
 						val badgesSeq = elements.map{ badge =>
-							(
-								(badge \ "name").asOpt[String],
-								(badge \ "badge").asOpt[String]
-							)
-						}.filter{
-							case (name,badge) => name.isDefined && badge.isDefined
-						}.map {
-							case (name,badge) => new Badge(name.get,badge.get)
-						}
-						if(badgesSeq.isEmpty) None else Some(badgesSeq)
+                            for {
+                                name <- (badge \ "name").asOpt[String];
+                                image <- (badge \ "badge").asOpt[String]
+                            } yield new Badge(name,image)
+						}.flatten
+                        
+                        badgesSeq match {
+                            case Nil => None
+                            case seq => Some(seq)
+                        }
 					}
 					case _ => None
 				}
