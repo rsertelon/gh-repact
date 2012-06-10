@@ -21,7 +21,7 @@ object Repository extends Controller {
   
   def show(user: String, name: String) = Action {
 		Async {
-  		    Github.repoInfo(user,name).flatMap{ repoInfo =>
+	    Github.repoInfo(user,name).flatMap{ repoInfo =>
 				Github.commits(user,name).flatMap { repoCommits =>
 					Github.repoContributors(user,name).flatMap { repoContributors =>
 						Coderwall.badgesOf("bluepyth").map { badges =>
@@ -30,7 +30,7 @@ object Repository extends Controller {
 						}
 					}
 				}
-  		    }
+	    }
 		}
   }
   
