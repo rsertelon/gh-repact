@@ -43,8 +43,10 @@ object Github {
                                 url         <- (repo \ "url"        ).asOpt[String];
                                 name        <- (repo \ "name"       ).asOpt[String];
                                 owner       <- (repo \ "username"   ).asOpt[String];
-                                description <- (repo \ "description").asOpt[String]
-    					    } yield new Repo(owner, name, url, description)
+                                description <- (repo \ "description").asOpt[String];
+                                language    <- (repo \ "language"   ).asOpt[String];
+                                homepage    <- (repo \ "homepage"   ).asOpt[String]
+    					    } yield new Repo(owner, name, url, description, language, homepage)
     					}.flatten
                     }
 				}
@@ -58,11 +60,13 @@ object Github {
 	def repoInfo(owner:String,name:String): Promise[Option[Repo]] = {
 		WS.url(GithubUrl.apiRepository(owner, name)).get().map { response =>
 			response.json match {
-				case jsObj: JsObject => {
+				case repo: JsObject => {
                     for {
-                        url         <- (jsObj \ "html_url"   ).asOpt[String];
-                        description <- (jsObj \ "description").asOpt[String]
-                    } yield new Repo(owner, name, url, description)
+                        url         <- (repo \ "html_url"   ).asOpt[String];
+                        description <- (repo \ "description").asOpt[String];
+                        language    <- (repo \ "language"   ).asOpt[String];
+                        homepage    <- (repo \ "homepage"   ).asOpt[String]
+                    } yield new Repo(owner, name, url, description, language, homepage)
 				}
 				case _ => None
 			}

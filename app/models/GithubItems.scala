@@ -21,7 +21,7 @@ object GithubUrl {
     def apiRepositoryCommits(owner: String, name: String, number: Int = 100) = apiRepository(owner, name) + "/commits?per_page=" + number
 }
 
-case class Repo(owner: String, name: String, url: String, description: String)
+case class Repo(owner: String, name: String, url: String, description: String, language: String, homepage: String)
 
 object Contributor {
 	def apply(c: Contributor, total: Int, badges: Option[Seq[Badge]]) = {
@@ -42,7 +42,7 @@ object Commit {
 case class Commit(committer: Contributor, date: Date, message: String, sha: String) {
 	def url(repoInfo: Repo) = GithubUrl.commit(repoInfo.owner, repoInfo.name, sha)
 	
-	val printedMessage = if(message.length > 30) message.substring(0,30) + "..." else message
+	val printedMessage = message.split("\n")(0)
 	
 	val prettyDate = Commit.prettyTime.format(date)
 }
