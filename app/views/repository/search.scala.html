@@ -1,31 +1,31 @@
 @(query: String)(reposOpt: Option[Seq[models.Repo]])
 
 @application.main(Some("Search Results")) {
-		
-		@components.search()
-		
-		<div class="container">
-	    <h1>Repositories found for "@query"</h1>
-	  
-			<div class="alert alert-info" style="margin-top:20px">
-				<a class="close" data-dismiss="alert" href="#">×</a>
-				<strong>Note:</strong>	Empty repositories are not shown
-			</div>
-	  </div>
-	  
-	  <div class="container">
-	    @reposOpt.map { repos =>
-	    	<ul class="unstyled" style="margin-top:20px">
-	    	@for(repo <- repos) {
-	    		<li class="well">
-	    			<a href="@routes.Repository.show(repo.owner,repo.name)">@repo.owner / @repo.name</a>
-	    			<a href="@repo.url" title="See on Github" target="_blank" style="float:right">See on Github <i class="icon-share-alt"></i></a>
-	    		</li>
-	    	}
-	    	</ul>
-	   	}.getOrElse{
-	   		<p>No results found</p>
-	   	}
-	    
-	  </div>
+
+  @components.search()
+
+  <div class="container">
+    <h1>Repositories found for "@query"</h1>
+
+    <div class="alert alert-info" style="margin-top:20px">
+      <a class="close" data-dismiss="alert" href="#">×</a>
+      <strong>Note:</strong>	Empty repositories are not shown
+    </div>
+  </div>
+
+  <div class="container">
+    @reposOpt.map { repos =>
+      <ul class="unstyled" style="margin-top:20px">
+        @for(repo <- repos) {
+        <li class="well">
+          <a href="@routes.Repository.show(repo.owner,repo.name)">@repo.owner / @repo.name</a>
+          <a href="@repo.url" title="See on Github" target="_blank" style="float:right">See on Github <i class="icon-share-alt"></i></a>
+        </li>
+        }
+      </ul>
+    }.getOrElse{
+      <p>No results found</p>
+    }
+
+  </div>
 }

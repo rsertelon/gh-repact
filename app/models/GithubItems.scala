@@ -17,22 +17,22 @@ object GithubUrl {
 case class Repo(owner: String, name: String, url: String, description: String, language: String, homepage: String)
 
 object Contributor {
-	def apply(c: Contributor, total: Int, badges: Option[Seq[Badge]]) = {
-		new Contributor(c.login, c.avatar_url, c.contributions, Some(total), badges)
-	}
+  def apply(c: Contributor, total: Int, badges: Option[Seq[Badge]]) = {
+    new Contributor(c.login, c.avatar_url, c.contributions, Some(total), badges)
+  }
 }
 
 case class Contributor(login: String, avatar_url: String, contributions: Int = 0, totalContribs: Option[Int] = None, badges: Option[Seq[Badge]] = None) {
-	val contribPercent = totalContribs.map{t => contributions.toDouble / t * 100}.getOrElse(0)
-	val url = GithubUrl.user(login)
+  val contribPercent = totalContribs.map{t => contributions.toDouble / t * 100}.getOrElse(0)
+  val url = GithubUrl.user(login)
 }
 
 object Commit {
-	val prettyTime = new PrettyTime
+  val prettyTime = new PrettyTime
 }
 
 case class Commit(committer: Contributor, date: Date, message: String, sha: String) {
-	def url(repoInfo: Repo) = GithubUrl.commit(repoInfo.owner, repoInfo.name, sha)
-	val printedMessage = message.split("\n")(0)
-	val prettyDate = Commit.prettyTime.format(date)
+  def url(repoInfo: Repo) = GithubUrl.commit(repoInfo.owner, repoInfo.name, sha)
+  val printedMessage = message.split("\n")(0)
+  val prettyDate = Commit.prettyTime.format(date)
 }

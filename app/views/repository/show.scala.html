@@ -1,95 +1,94 @@
 @(repoInfo: models.Repo)(contributors: Seq[Contributor])(commits: Seq[Commit])
 
 @badgeImages(badges: Seq[Badge]) = {
-	@for(badge <- badges) {
-		<img width='40' height='40' src='@badge.image' title='@badge.name' />
-	}
+  @for(badge <- badges) {
+  <img width='40' height='40' src='@badge.image' title='@badge.name' />
+  }
 }
 
 @contributor(contrib: models.Contributor) = {
-	<li class="well span4">
-		<img src="@contrib.avatar_url" width="50" height="50" style="float:left" />
-		<div class="container span3" style="margin-left:10px;float:left">
-			@contrib.badges.map { badges =>
-			<img src='@routes.Assets.at("images/coderwall.png")' width="20" height="20" class="pull-right" rel="popover" data-content="@badgeImages(badges)" data-original-title="Coderwall Badges" />
-			}
-			<p><a href="@contrib.url" target="_blank">@contrib.login</a></p>
-			<div class="progress progress-striped" title="Commits: @contrib.contributions">
-			  <div class="bar" style="width: @contrib.contribPercent%"></div>
-			</div>
-		</div>
-	</li>
+  <li class="well span4">
+    <img src="@contrib.avatar_url" width="50" height="50" style="float:left" />
+    <div class="container span3" style="margin-left:10px;float:left">
+      @contrib.badges.map { badges =>
+      <img src='@routes.Assets.at("images/coderwall.png")' width="20" height="20" class="pull-right" rel="popover" data-content="@badgeImages(badges)" data-original-title="Coderwall Badges" />
+      }
+      <p><a href="@contrib.url" target="_blank">@contrib.login</a></p>
+      <div class="progress progress-striped" title="Commits: @contrib.contributions">
+        <div class="bar" style="width: @contrib.contribPercent%"></div>
+      </div>
+    </div>
+  </li>
 }
 
 @commit(commitData: models.Commit) = {
-	<li class="span9 alert alert-info">
-		<img src="@commitData.committer.avatar_url" width="50" height="50" style="float:left;margin-right:10px" /> 
-		<p><a href="@commitData.url(repoInfo)" target="_blank"><strong>@commitData.printedMessage</strong></a></p>
-		<p>
-			<a href="@commitData.committer.url" target="_blank">@commitData.committer.login</a>
-			<small>&mdash; @commitData.prettyDate</small>
-		</p>
-	</li>
+  <li class="span9 alert alert-info">
+    <img src="@commitData.committer.avatar_url" width="50" height="50" style="float:left;margin-right:10px" />
+    <p><a href="@commitData.url(repoInfo)" target="_blank"><strong>@commitData.printedMessage</strong></a></p>
+    <p>
+      <a href="@commitData.committer.url" target="_blank">@commitData.committer.login</a>
+      <small>&mdash; @commitData.prettyDate</small>
+    </p>
+  </li>
 }
 
 @application.main(Some(repoInfo.owner + "/" + repoInfo.name)) {
 
+  <div class="container">
+    <ul class="breadcrumb">
+      <li><a href="@routes.Application.index">Home</a> <span class="divider">/</span></li>
+      <li class="active">@repoInfo.owner/@repoInfo.name</li>
+    </ul>
 
-	<div class="container">
-		<ul class="breadcrumb">
-			<li><a href="@routes.Application.index">Home</a> <span class="divider">/</span></li>
-			<li class="active">@repoInfo.owner/@repoInfo.name</li>
-		</ul>
-    
-  	<h1>@repoInfo.name</h1>
-  	<p><i class="icon-chevron-right"></i>by @repoInfo.owner</p>
+    <h1>@repoInfo.name</h1>
+    <p><i class="icon-chevron-right"></i>by @repoInfo.owner</p>
 
     <div class="span2" style="float:left;margin-left:0">
-	  	<dl>
-	  		<dt>Description</dt>
-	  		<dd>@repoInfo.description</dd>
-	  		<dt>Homepage</dt>
-	  		@if(repoInfo.homepage.isEmpty) {
-	  		<dd>No homepage</dd>
-	  		} else {
-	  		<dd><a href="@repoInfo.homepage" target="_blank">@repoInfo.homepage</a></dd>
-	  		}
-	  		<dt>Main Language</dt>
-	  		<dd>@repoInfo.language</dd>
-		  </dl>
+      <dl>
+        <dt>Description</dt>
+        <dd>@repoInfo.description</dd>
+        <dt>Homepage</dt>
+        <dd>
+        @if(repoInfo.homepage.isEmpty) {
+          No homepage
+        } else {
+          <a href="@repoInfo.homepage" target="_blank">@repoInfo.homepage</a>
+        }
+        </dd>
+        <dt>Main Language</dt>
+        <dd>@repoInfo.language</dd>
+      </dl>
     </div>
-    
+
     <div class="span10" style="float:left">
-		  <ul class="nav nav-tabs">
-				<li class="active"><a href="#contributors" data-toggle="tab">Contributors</a></li>
-				<li><a href="#commits" data-toggle="tab">Commits</a></li>
-				<li><a href="#stats" data-toggle="tab">Statistics</a></li>
-				<iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=@repoInfo.owner&repo=@repoInfo.name&type=watch&count=true"
-  allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px" class="pull-right"></iframe>
-				<iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=@repoInfo.owner&repo=@repoInfo.name&type=fork&count=true"
-  allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px" class="pull-right"></iframe>
-			</ul>
-		
-			<div class="tab-content">
-				<div class="tab-pane active" id="contributors">
-					<ul class="unstyled">
-					@for(contrib <- contributors) {
-						@contributor(contrib)
-					}
-					</ul>
-				</div>
-				<div class="tab-pane" id="commits">
-					<ul class="unstyled timeline">
-					@for(commitData <- commits) {
-						@commit(commitData)
-					}
-					</ul>
-				</div>
-				<div class="tab-pane" id="stats">
-			    <div id="chart_div" style="width:700px;height:500px"></div>
-				</div>
-			</div>
-		</div>
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#contributors" data-toggle="tab">Contributors</a></li>
+        <li><a href="#commits" data-toggle="tab">Commits</a></li>
+        <li><a href="#stats" data-toggle="tab">Statistics</a></li>
+        <iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=@repoInfo.owner&repo=@repoInfo.name&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px" class="pull-right"></iframe>
+        <iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=@repoInfo.owner&repo=@repoInfo.name&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px" class="pull-right"></iframe>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane active" id="contributors">
+          <ul class="unstyled">
+          @for(contrib <- contributors) {
+            @contributor(contrib)
+          }
+          </ul>
+        </div>
+        <div class="tab-pane" id="commits">
+          <ul class="unstyled timeline">
+          @for(commitData <- commits) {
+            @commit(commitData)
+          }
+          </ul>
+        </div>
+        <div class="tab-pane" id="stats">
+          <div id="chart_div" style="width:700px;height:500px"></div>
+        </div>
+      </div>
+    </div>
   </div>
   <script type="text/javascript">
       google.load("visualization", "1", {packages:["corechart"]});
@@ -98,8 +97,8 @@
         var data = google.visualization.arrayToDataTable([
           ['Contributor', 'Commits'],
           @commits.groupBy(_.committer.login).map{ case (name, list) =>
-          	['@name', @list.size]
-					}.mkString(",")
+            ['@name', @list.size]
+          }.mkString(",")
         ]);
 
         var options = {
@@ -113,4 +112,5 @@
         chart.draw(data, options);
       }
     </script>
+    
 }
