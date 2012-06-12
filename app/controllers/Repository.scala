@@ -23,11 +23,14 @@ object Repository extends Controller {
     Async {
       Github.repoInfo(user,name).flatMap{ repoInfo =>
         Github.commits(user,name).flatMap { repoCommits =>
-          Github.repoContributors(user,name).flatMap { repoContributors =>
-            Coderwall.badgesOf("bluepyth").map { badges =>
-              val total = repoContributors.get.foldLeft(0)((sum,c) => sum + c.contributions)
-              Ok(views.html.repository.show(repoInfo.get)(repoContributors.get.map(r => Contributor(r, total, badges)))(repoCommits.get))
-            }
+          Github.repoContributors(user,name).map { repoContributors =>
+            (
+              for {
+                information <- repoInfo;
+                contributors <- repoContributors;
+                commits <- repoCommits
+              } yield Ok(views.html.repository.show(information)(contributors.map(r => Contributor(r, contributors.foldLeft(0)((sum,c) => sum + c.contributions))))(commits))
+            ).getOrElse(NotFound(views.html.application.notfound()))
           }
         }
       }

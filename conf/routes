@@ -6,9 +6,15 @@
 GET     /                           controllers.Application.index
 GET     /about                      controllers.Application.about
 
+# Badges
+GET     /badges/:username           controllers.Badge.forUser(username)
+
 # Repositories
 GET     /search                     controllers.Repository.search(q)
 GET     /:user/:name                controllers.Repository.show(user, name)
+
+# JS Routing
+GET     /assets/javascripts/routes  controllers.Application.jsRoutes
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

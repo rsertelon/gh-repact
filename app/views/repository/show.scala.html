@@ -1,18 +1,10 @@
 @(repoInfo: models.Repo)(contributors: Seq[Contributor])(commits: Seq[Commit])
 
-@badgeImages(badges: Seq[Badge]) = {
-  @for(badge <- badges) {
-  <img width='40' height='40' src='@badge.image' title='@badge.name' />
-  }
-}
-
 @contributor(contrib: models.Contributor) = {
   <li class="well span4">
     <img src="@contrib.avatar_url" width="50" height="50" style="float:left" />
     <div class="container span3" style="margin-left:10px;float:left">
-      @contrib.badges.map { badges =>
-      <img src='@routes.Assets.at("images/coderwall.png")' width="20" height="20" class="pull-right" rel="popover" data-content="@badgeImages(badges)" data-original-title="Coderwall Badges" />
-      }
+      <img src='@routes.Assets.at("images/coderwall.png")' width="20" height="20" class="pull-right badges" rel="popover" data-content="Loading Badges..." data-original-title="Coderwall Badges" data-username="@contrib.login.toLowerCase" />
       <p><a href="@contrib.url" target="_blank">@contrib.login</a></p>
       <div class="progress progress-striped" title="Commits: @contrib.contributions">
         <div class="bar" style="width: @contrib.contribPercent%"></div>
@@ -50,7 +42,7 @@
         <dt>Homepage</dt>
         <dd>
         @if(repoInfo.homepage.isEmpty) {
-          No homepage
+          &mdash;
         } else {
           <a href="@repoInfo.homepage" target="_blank">@repoInfo.homepage</a>
         }
@@ -90,7 +82,8 @@
       </div>
     </div>
   </div>
-  <script type="text/javascript">
+  <script src="@routes.Application.jsRoutes"></script>
+  <script>
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
       function drawChart() {
@@ -111,6 +104,20 @@
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
         chart.draw(data, options);
       }
-    </script>
-    
+  </script>
+  <script>
+    $('img.badges').each(
+      function() {
+        var img = $(this)
+          jsRoutes.controllers.Badge.forUser(
+            img.attr('data-username')
+          ).ajax(
+            {
+              success: function(data){img.attr({'data-content':data})},
+              error: function(data){img.attr({'data-content':'Error while retrieving badges'})}
+            }
+          )
+      }
+    );
+  </script>
 }
