@@ -8,6 +8,6 @@ h2 {
   margin-bottom:20px
 }
 
-.contribs li:nth-element(odd){
+.contribs li:nth-child(odd){
   margin-left: 0
 }
